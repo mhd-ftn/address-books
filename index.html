@@ -1,9 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Address Book</title>
-  </head>
-  <body></body>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adress Books</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <h2>Contact</h2>
+      <button id="addContactBtn">Add contact</button>
+      <ul>
+        <li>Contact</li>
+        <li>Spam</li>
+      </ul>
+    </aside>
+
+    <main class="main">
+      <div class="top-bar">
+        <input type="text" id="searchInput" placeholder="seacrh contact..." />
+      </div>
+
+      <h3>Contact</h3>
+      <table id="ContactTable">
+        <thead>
+          <tr>
+            <th>Nama</th>
+            <th>NoTelp</th>
+          </tr>
+        </thead>
+      </table>
+    </main>
+  </div>
+
+</body>
 </html>
