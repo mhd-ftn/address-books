@@ -7,6 +7,7 @@ let contacts = JSON.parse(localStorage.getItem("contacts")) || [];
 const table = document.querySelector("table");
 const form = document.getElementById("contactForm");
 const searchInput = document.getElementById("search");
+const contactList = document.getElementById("contactList");
 
 // Simpan ke LocalStorage
 function saveData() {
@@ -17,40 +18,44 @@ function saveData() {
 // READ (TAMPILKAN DATA)
 // =====================
 function showContacts(list = contacts) {
-  const oldTbody = table.querySelector("tbody");
-  if (oldTbody) oldTbody.remove();
+  // Membersihkan isi tbody yang ada
+  contactList.innerHTML = "";
 
-  const tbody = document.createElement("tbody");
-  tbody.className = "bg-white text-black";
+  if (list.length === 0) {
+    contactList.innerHTML = `
+      <tr class="hover:bg-slate-700/50 transition-colors">
+        <td class="py-3 px-4 text-slate-300 italic text-center" colspan="4">Belum ada data...</td>
+      </tr>
+    `;
+    return;
+  }
 
   list.forEach(contact => {
     const tr = document.createElement("tr");
+    tr.className = "hover:bg-slate-700/50 transition-colors border-b border-slate-700";
 
     tr.innerHTML = `
-      <td class="py-2 px-3 border text-center">${contact.nama}</td>
-      <td class="py-2 px-3 border text-center">${contact.telp}</td>
-      <td class="py-2 px-3 border text-center">${contact.email}</td>
-      <td class="py-2 px-3 border text-center">${contact.lokasi}</td>
-      <td class="py-2 px-3 border text-center">
+      <td class="py-3 px-4 text-slate-300">${contact.nama}</td>
+      <td class="py-3 px-4 text-slate-300">${contact.telp}</td>
+      <td class="py-3 px-4 text-slate-300">${contact.email}</td>
+      <td class="py-3 px-4 text-center">
         <button onclick="editContact(${contact.id})"
-          class="bg-green-500 text-white px-2 py-1 rounded mr-2 hover:bg-green-600">
+          class="bg-green-600 text-white px-3 py-1 rounded-md mr-2 hover:bg-green-500 transition-colors text-sm">
           Edit
         </button>
         <button onclick="deleteContact(${contact.id})"
-          class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
+          class="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-500 transition-colors text-sm">
           Hapus
         </button>
       </td>
     `;
 
-    tbody.appendChild(tr);
+    contactList.appendChild(tr);
   });
-
-  table.appendChild(tbody);
 }
 
 // =====================
-// CREATE + VALIDATION (FIX)
+// CREATE + VALIDATION
 // =====================
 form.addEventListener("submit", function (e) {
   e.preventDefault();
@@ -58,14 +63,13 @@ form.addEventListener("submit", function (e) {
   const namaInput = document.getElementById("nama");
   const telpInput = document.getElementById("telp");
   const emailInput = document.getElementById("email");
-  const lokasiInput = document.getElementById("lokasi");
 
   const nama = namaInput.value.trim();
   const telp = telpInput.value.trim();
   const email = emailInput.value.trim();
-  const lokasi = lokasiInput.value.trim();
 
-  if (!nama || !telp || !email || !lokasi) {
+  // Validasi tanpa lokasi
+  if (!nama || !telp || !email) {
     alert("Semua field wajib diisi!");
     return;
   }
@@ -74,15 +78,13 @@ form.addEventListener("submit", function (e) {
     id: Date.now(),
     nama,
     telp,
-    email,
-    lokasi
+    email
   });
 
   saveData();
   showContacts();
   form.reset();
 });
-
 
 // =====================
 // EDIT
@@ -91,10 +93,14 @@ function editContact(id) {
   const c = contacts.find(c => c.id === id);
   if (!c) return;
 
-  c.nama = prompt("Edit Nama:", c.nama);
-  c.telp = prompt("Edit Telp:", c.telp);
-  c.email = prompt("Edit Email:", c.email);
-  c.lokasi = prompt("Edit Lokasi:", c.lokasi);
+  const newNama = prompt("Edit Nama:", c.nama);
+  const newTelp = prompt("Edit Telp:", c.telp);
+  const newEmail = prompt("Edit Email:", c.email);
+
+  // Pastikan user tidak membatalkan prompt (null)
+  if (newNama !== null) c.nama = newNama;
+  if (newTelp !== null) c.telp = newTelp;
+  if (newEmail !== null) c.email = newEmail;
 
   saveData();
   showContacts();
@@ -118,10 +124,11 @@ searchInput.addEventListener("keyup", function () {
   const keyword = this.value.toLowerCase();
   const filtered = contacts.filter(c =>
     c.nama.toLowerCase().includes(keyword) ||
-    c.telp.toLowerCase().includes(keyword)
+    c.telp.toLowerCase().includes(keyword) ||
+    c.email.toLowerCase().includes(keyword)
   );
   showContacts(filtered);
 });
 
-// Tampilkan saat load
+// Tampilkan saat load pertama kali
 showContacts();
