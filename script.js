@@ -1,24 +1,19 @@
-// =====================
-// LOCAL STORAGE
-// =====================
 let contacts = JSON.parse(localStorage.getItem("contacts")) || [];
 
-// Elemen DOM
+
 const table = document.querySelector("table");
 const form = document.getElementById("contactForm");
 const searchInput = document.getElementById("search");
 const contactList = document.getElementById("contactList");
 
-// Simpan ke LocalStorage
+
 function saveData() {
   localStorage.setItem("contacts", JSON.stringify(contacts));
 }
 
-// =====================
-// READ (TAMPILKAN DATA)
-// =====================
+
 function showContacts(list = contacts) {
-  // Membersihkan isi tbody yang ada
+
   contactList.innerHTML = "";
 
   if (list.length === 0) {
@@ -54,9 +49,7 @@ function showContacts(list = contacts) {
   });
 }
 
-// =====================
-// CREATE + VALIDATION
-// =====================
+
 form.addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -68,7 +61,7 @@ form.addEventListener("submit", function (e) {
   const telp = telpInput.value.trim();
   const email = emailInput.value.trim();
 
-  // Validasi tanpa lokasi
+
   if (!nama || !telp || !email) {
     alert("Semua field wajib diisi!");
     return;
@@ -86,9 +79,7 @@ form.addEventListener("submit", function (e) {
   form.reset();
 });
 
-// =====================
-// EDIT
-// =====================
+
 function editContact(id) {
   const c = contacts.find(c => c.id === id);
   if (!c) return;
@@ -97,7 +88,7 @@ function editContact(id) {
   const newTelp = prompt("Edit Telp:", c.telp);
   const newEmail = prompt("Edit Email:", c.email);
 
-  // Pastikan user tidak membatalkan prompt (null)
+
   if (newNama !== null) c.nama = newNama;
   if (newTelp !== null) c.telp = newTelp;
   if (newEmail !== null) c.email = newEmail;
@@ -106,9 +97,7 @@ function editContact(id) {
   showContacts();
 }
 
-// =====================
-// DELETE
-// =====================
+
 function deleteContact(id) {
   if (!confirm("Yakin hapus kontak?")) return;
 
@@ -117,9 +106,7 @@ function deleteContact(id) {
   showContacts();
 }
 
-// =====================
-// SEARCH
-// =====================
+
 searchInput.addEventListener("keyup", function () {
   const keyword = this.value.toLowerCase();
   const filtered = contacts.filter(c =>
@@ -130,5 +117,5 @@ searchInput.addEventListener("keyup", function () {
   showContacts(filtered);
 });
 
-// Tampilkan saat load pertama kali
+
 showContacts();
